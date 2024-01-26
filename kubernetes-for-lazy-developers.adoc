@@ -8,7 +8,7 @@ Marco Behler
 :page-tags: ["kuberntes"]
 :page-commento_id: /guides/kubernetes-for-lazy-developer
 
-(*Editor’s note*: At ~n words, you probably don't want to try reading this on a mobile device. Bookmark it and come back later.)
+(*Editor’s note*: At 5000 words, you probably don't want to try reading this on a mobile device. Bookmark it and come back later.)
 
 == Introduction
 
@@ -217,7 +217,7 @@ Truth be told, you'll be shocked if you enter "Kubernetes" on https://learning.o
 
 You can download `_kubectl_`, which is essentially _the_ CLI tool to do everything you ever wanted to do with your Kubernetes cluster https://kubernetes.io/docs/tasks/tools/[here]. That page lists various ways of installing kubectl for your specific operating system.
 
-=== How do I pronounce kubectl?
+=== How do I pronounce kubectl?†
 
 See https://www.youtube.com/watch?v=9oCVGs2oz28. It's being pronounced as "Kube Control".
 
