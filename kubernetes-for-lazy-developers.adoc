@@ -2,10 +2,10 @@
 Marco Behler
 2024-01-26
 :page-layout: layout-guides
-:page-image: "TODO"
-:page-description: TODO
+:page-image: "/images/guides/undraw_logistics_x4dc.png"
+:page-description: You can use this guide to get up to speed with Kubernetes as a developer. From its very basics, to more intermediate topics like Helm charts and how all of this affects you as a dev.
 :page-published: false
-:page-tags: ["kuberntes"]
+:page-tags: ["kubernetes", "kubernetes basics", "kubernetes for developers"]
 :page-commento_id: /guides/kubernetes-for-lazy-developer
 
 (*Editor’s note*: At 5000 words, you probably don't want to try reading this on a mobile device. Bookmark it and come back later.)
