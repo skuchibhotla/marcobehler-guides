@@ -20,9 +20,9 @@ If you're a developer who has either never used Kubernetes before or wants to br
 
 === How did we get here?
 
-Many developers I've met throughout my career, didn't necessarily care about the "now that I've written the code, it also needs to be run somewhere"-part of your application's life.
+Many developers I've met throughout my career, didn't necessarily care about the "now that I've written the code, it also needs to be run somewhere"-part of their application's lifecycle. (Depending on how seriously your company defines and takes the word _DevOps_ your mileage with this might vary).
 
-Let's start slowly. What does running an application actually mean?
+But let's start slowly. What does running an application actually mean?
 
 It depends a bit on your programming language ecosystem, but, for example, in terms of Java and modern web applications, you literally compile all your source in one, single, executable .jar file, that you can run with a simple command.
 
@@ -77,7 +77,7 @@ docker run --name my-new-ai-startup -p 80:8080 -d mynewaistartup
 
 You or your CI/CD server managed to bake your application into a Docker image. But how does that Docker image eventually end up on your target deployment server?
 
-You could theoretically save your Docker image as a .tar file, copy it onto your final server and load it there. But more realistically, you'd push your Docker image to a Docker registry, be that https://hub.docker.com/_/registry[dockerhub], https://aws.amazon.com/ecr/[Amazon ECR] or any of the other gazillion self-hosted container registries, like https://docs.gitlab.com/ee/user/packages/container_registry/[Gitlab's], for example.
+You could theoretically save your Docker image as a .tar file, copy it onto your final server and load it there. But more realistically, you'd push your Docker image to a Docker registry, be that https://hub.docker.com/_/registry[dockerhub], https://aws.amazon.com/ecr/[Amazon ECR] or any of the other gazillion self-hosted container registries, like https://docs.gitlab.com/ee/user/packages/container_registry/[GitLab's], for example.
 
 Once your image made it to said registry, you can https://docs.docker.com/engine/reference/commandline/login/[login] to that registry on your target server.
 
@@ -120,9 +120,9 @@ volumes:
   logvolume01: {}
 ----
 
-Then you just run `_docker compose up_` and your whole _environment_ (consisting of all your separate services running in separate docker containers) will be started.
+Then you just run `_docker compose up_` and your whole _environment_ (consisting of all your separate services running in separate docker containers) will be started. Do note, that this means all your containers will run on the _same machine_. If you want to scale this out to multiple machines, you'll need to use https://docs.docker.com/engine/swarm/[Docker Swarm].
 
-While `_Docker Compose_` might be mainly known for quickly spinning up development or testing environments, it actually works really well for single host deployments as well.
+While `_Docker Compose_` might be mainly known for quickly spinning up development or testing environments, it actually works really well for (single host) prod deployments as well.
 If your application...
 
 * doesn't have any specific high-availability requirements
@@ -139,17 +139,35 @@ Things get interesting if you want to start running hundreds, thousands (or a mu
 
 Let's do a quick Kubernetes Concept 101.
 
-TODO GRAPH UML control pane workload..
+TBD Control Pane Graph
 
 === Kubernetes 101: (Worker) Nodes
 
 Your software (or _workload_ in Kubernetes terms) has to run somewhere, be it a virtual or physical machine. Kubernetes call this somewhere `_Nodes_`.
 
-Furthermore, Kubernetes deploys and runs containers: Hello, Docker, my old friend!
+Furthermore, Kubernetes deploys and runs containers: Hello, Docker, my old friend! (Note: Kubernetes supports many container runtimes, from https://containerd.io/[containerd], https://cri-o.io/[CRI-O], https://docs.docker.com/engine/[Docker Engine] and more, though Docker is the most commonly used)
 
 Actually, this is not 100% right. In Kubernetes' terms, you deploy (_schedule_) `_Pods_`, with a pod consisting of one or more containers.
 
 Alright, we got `_pods_` running on `_nodes_`, but who controls those nodes and how and where do you decide what to run on these `_nodes_`?
+
+(TIP: A tiny mapping table)
+[cols="1,1"]
+|===
+|Non-Kubernetes -> | Kubernetes Speak
+
+|Software/Application(s)
+|Workload
+
+|Machine
+|Node
+
+|Container(s)
+|Pod
+
+|Deployment
+|Scheduling
+|===
 
 === Kubernetes 101: Control Plane
 
@@ -157,7 +175,11 @@ Meet the `_Control Plane_` For simplicity's sake, let's just think of it as _one
 
 * Lets you [line-through]#run# _schedule_ your application, i.e. lets you put a pod on a node.
 * Checks if all your pods are in the desired state, e.g. are they responsive or does one of them need to be restarted?
-* Fulfills every engineer's wet dream: We need to finally scale 10xfold, let's quickly spin up n-more pods!
+* fulfills every engineer's fantasy: "We need to finally scale 10xfold, let's quickly spin up n-more pods!"
+
+=== Kubernetes 101: Pods vs Nodes
+
+In case the difference between `_pods_` and `_nodes_` is still a bit unclear. Kubernetes has a so-called Scheduler. Whenever the Scheduler discovers new pods (== container(s)) to be scheduled (yay!), it tries to find the _optimal_ `_node_` for the pod. Which means it could very well be the case that multiple pods run on the same node or different ones. If you want to dig deeper into this topic, you might want to read the documentation for "node selection" and how you can influence it, https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/[in the official documentation].
 
 === Kubernetes 101: Clusters & Clouds
 
@@ -179,7 +201,7 @@ If you're not self-hosting your Kubernetes setup, you'd simply use whatever UI y
 
 Those four 101-sections above will (hopefully) give you enough of a mental model to get started with Kubernetes and we'll leave it at that with the concepts.
 
-Truth to be told, you'll be shocked if you enter "Kubernetes" on https://learning.oreilly.com . You'll get thousands of learning resource results, with many many many of the books being 500+ pages long. Fine reading for a rainy winter day! The good part: you, as a developer, don't have to care about most of that's written in these books, teaching you how to setup, maintain and manage your clusters, though being aware of the sheer complexity of all of this helps.
+Truth be told, you'll be shocked if you enter "Kubernetes" on https://learning.oreilly.com . You'll get thousands of learning resource results, with many many many of the books being 500+ pages long. Fine reading for a rainy winter day! The good part: you, as a developer, don't have to care about most of that's written in these books, teaching you how to setup, maintain and manage your clusters, though being aware of the sheer complexity of all of this helps.
 
 === What do I need to do to see all of this in action?
 
@@ -190,6 +212,10 @@ Truth to be told, you'll be shocked if you enter "Kubernetes" on https://learnin
 === Where do I get kubectl?
 
 You can download `_kubectl_`, which is essentially _the_ CLI tool to do everything you ever wanted to do with your Kubernetes cluster https://kubernetes.io/docs/tasks/tools/[here]. That page lists various ways of installing kubectl for your specific operating system.
+
+=== How do I pronounce kubectl?
+
+See https://www.youtube.com/watch?v=9oCVGs2oz28. It's being pronounced as "Kube Control".
 
 === What do I need for kubectl to work?
 
@@ -214,6 +240,8 @@ A kubeconfig file is good, old YAML, and there are many things it can contain (c
 For now we can ignore users and contexts and live with the simplification that the kubeconfig file contains the cluster(s) you can connect to, e.g. `_development_` or `_test_`.
 
 Here's an example kubeconfig file, taken https://kubernetes.io/docs/tasks/access-application-cluster/configure-access-multiple-clusters/[from the official Kubernetes documentation].
+
+(Don't worry, you don't have to understand this line-by-line, it's simply there to give you a feeling what these files look like)
 
 [source,yaml]
 ----
@@ -262,14 +290,11 @@ users:
     username: exp
 ----
 
-TODO line by line explanations:
-
 === Kubectl 101
 
 What can you now do with Kubectl? Remember, at the beginning we said your goal is to have a pod (n+ containers), and schedule it (run them) on a node (server).
 
 And the way is to feed yaml files (yay) with the desired state of your cluster into kubectl, and it will happily set your cluster into the desired state.
-
 
 === Pod Manifests
 
@@ -333,7 +358,15 @@ You need to tell Kubernetes _what_ your pod should look like. Remember, it can b
 
 You'll specify a specific Docker image, including its version and also expose port 8080 on that container via http. That's it.
 
-*Long Story Short* When you run `_kubectl apply_`, your yaml file will be submitted to the https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/[Kubernetes API Server] and eventually our Kubernetes system will schedule a pod (with a marcocodes 1.4 container) to run on a healthy, viable node in our cluster.
+=== What REALLY happens to this yaml file?
+
+*Long Story Short* When you then run `_kubectl apply_`, your yaml file will be submitted to the https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/[Kubernetes API Server] and eventually our Kubernetes system will schedule a pod (with a marcocodes 1.4 container) to run on a healthy, viable node in our cluster.
+
+More technically, Kubernetes has the concept of a `_reconcilliation loop_`, a fancy term for https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/[the scheduler] being able to say:
+
+"Here is my current Kubernetes cluster state, here is the users' yaml file, let me reconcile these two". User wants a new pod? I'll create it. User wants storage? I'll attach it to the container, etc.
+
+Speaking about storage...
 
 === Resources & Volumes
 
@@ -416,7 +449,7 @@ spec:
           image: "gcr.io/marco/marcocodes:3.85"
 ----
 
-I left out a fair amount of lines (and complexity) out of this YAML file, but most interestingly for now are these two changes:
+I left a fair amount of lines (and complexity) out of this YAML file, but most interestingly for now are these two changes:
 
 [source,yaml,indent=0,role=tooth]
 ----
@@ -480,14 +513,17 @@ There are an additional 92387 YAML key-value pairs you'll need to learn for Depl
 * _RollingUpdate_ will perform the update while still serving traffic through old pods, and is thus generally preferred.
 
 
-=== TODO: Reconcilliation loops
 
-TODO TODO: where does this fit in?
+=== The Static Nature of K8s
 
-In a reconciliation loop, the scheduler says “here is the user’s desired state. Here is the current state. They are not the same, so I will take steps to reconcile them.” The user wants storage for the container. Currently there is no storage attached. So Kubernetes creates a unit of storage and attaches it to the container. The container needs a public network address. None exists. So a new address is attached to the container. Different subsystems in Kubernetes work to fulfill their individual part of the user’s overall declaration of desired state.
+Do note, that everything you have seen so far is, essentially, static. You have YAML files, and even with the _Deployment_ objects above, if you have a new version of your container, you need to edit the .yaml file, save it, apply it - there is a fair amount of manual work involved.
+
+If you want things to be a bit more dynamic, you'll have to additional tools such as https://helm.sh/, which we'll discuss below.
 
 
 === Rolling Updates: Too Good To Be True
+
+While we are talking about deploying new versions of your containers....
 
 As always, the devil is in the details. Rolling updates have been done many moons ago already, before Kubernetes existed, even if it was just batch scripts firing SSH commands.
 
@@ -497,7 +533,9 @@ So, beware of the marketing materials, selling you easy rolling updates - their 
 
 === Side-Note: Self-Healing
 
-On a similar note, that same is true for the term _self-healing_. What Kubernetes can do, is execute health-checks and then take an unresponsive pod, kill it, and schedule a new one. That is also functionality, which has in one form or another existed endlessly (TODO systemd comparison, across multiple nodes etc). What Kubernetes _cannot_ do is automatically take a botched database migration, which leads to application errors and then magically _self-heal_ the cluster.
+On a similar note, that same is true for the term _self-healing_. What Kubernetes can do, is execute health-checks and then take an unresponsive pod, kill it, and schedule a new one. That is also functionality, which has in one form or another existed endlessly. Your favorite Linux distro has essentially always been able to watch and restart services https://superuser.com/questions/683325/how-to-monitor-a-service-and-restart-if-stopped-in-linux[through a variety of ways] - albeit limited to the current machine.
+
+What Kubernetes _cannot_ do is automatically take a botched database migration, which leads to application errors, and then magically _self-heal_ the cluster, i.e. fix corrupted database columns.
 
 It is just my personal impression that talk about _self-healing_ systems often insinuates the latter (maybe among management), whereas it is much more basic functionality.
 
@@ -507,7 +545,7 @@ So far, we talked about dynamically spawning up pods, but never about how networ
 
 Kubernetes has a couple of concepts to help you with that, from `_Service_` objects (which allow you to expose parts of your cluster to the outer world) to `_Ingress_` objects (allowing you to do HTTP load balancing). Again, this will amount to tons and tons of YAML and a fair amount of reading, but at the end of the day Kubernetes allows you to route any traffic your application gets to your cluster and the other way around.
 
-(Fun Ingress Fact: You'll need to install an Ingress controller (there is no standard one being built into Kubernetes), which will do the load-balancing for you .Options are plentyful: On platforms like AWS, you'd simply use ELB, if you go bare-metal Kubernetes you could use https://projectcontour.io/[Contour], etc.)
+(Fun Ingress Fact: You'll need to install an Ingress controller (there is no standard one being built into Kubernetes), which will do the load-balancing for you. Options are plentyful: On platforms like AWS, you'd simply use ELB, if you go bare-metal Kubernetes you could use https://projectcontour.io/[Contour], etc.)
 
 === Last but not least: ConfigMaps & Secrets Management
 
@@ -551,17 +589,17 @@ If you are already using Kubernetes, please let me know in the comment section d
 
 === Do I really need all of this?
 
-It's a good question and it would be the perfect time to sprinkle in some real-life K8s anecdotes: Sysadmins resource constraining pods to death, so that booting up pods takes endlessly - so long that they are being marked unhealthy and killed, leading to an endless pod-creation-killing loop, but we'll save the long explanation for another time.
+It's a good question and it would be the perfect time to sprinkle in some real-life K8s anecdotes: Sysadmins resource constraining pods to death, so that booting up pods takes forever - so long that they are being marked unhealthy and killed, leading to an endless pod-creation-killing loop, but we'll save the long explanation for another time.
 
-As a developer you usually don't have to choice to decide, but here's the big picture:
+As a developer you usually don't have the choice to decide, but here's the big picture:
 
-As mentioned earlier in the article, there is an endless amount of learning material when it comes to just 'hosting' a Kubernetes cluster and we're not just talking about 'self-hosting' it entirely, but also using any of the managed Kubernetes variants. If you have the in-house expertise to:
+As mentioned earlier in the article, there is an endless amount of learning material when it comes to just 'hosting' a Kubernetes cluster and we're not just talking about 'self-hosting' on bare metal, but also using any of the managed Kubernetes variants. If you have the in-house expertise to:
 
 * handle all this additional complexity
 * you can explain all the concepts described in this article in more and better detail to all of your developers
 * AND FIRST AND FOREMOST you have legitimate requirements to manage hundreds and thousands of containers dynamically (and no, magic out-of-the-blue-scaling requirements don't count)
 
-... go for Kubernetes. But it is my belief that a huge amount of companies could save themselves a fair amount of time, money & stress with a simpler approach.
+... go for Kubernetes. But it is my belief that a huge amount of companies could save themselves a fair amount of time, money & stress with a simpler approach, instead of fantasizing aboutr having Google scale infrastructure challenges.
 
 === Common Kubectl Commands
 
@@ -573,7 +611,7 @@ TBD
 
 small workloads, vs . google sized workloads....while default seems to be k8, do you really NEED this stuff??
 
-== Plan For The Next Revision
+=== Plan For The Next Revision
 
 Vote in the comment section if you want any of the below or all of them to happen:
 
@@ -582,25 +620,22 @@ Vote in the comment section if you want any of the below or all of them to happe
 * Potentially: Example on Kubernetes vs Docker Compose side-by-side configs
 * Potentially: GitOps
 
-== Acknowledgments & References
+=== Acknowledgments & References
 
 If you see something in this article that you'd like to see improved, please file a PR.
 
-Thanks to Maarten Balliauw, Andreas Eisele, Andrei Efimov, Anton Aleksandrov for comments/corrections/discussion. Special thanks to the authors of https://www.oreilly.com/library/view/getting-started-with/9780138057626/[Getting Started with Kubernetes], as well as https://learning.oreilly.com/library/view/learning-helm/9781492083641/[Learning Helm].
+Thanks to Maarten Balliauw, Andreas Eisele, Andrei Efimov, Anton Aleksandrov, Garth Gilmour, Marit van Dijk for comments/corrections/discussion. Special thanks to the authors of https://www.oreilly.com/library/view/getting-started-with/9780138057626/[Getting Started with Kubernetes], as well as https://learning.oreilly.com/library/view/learning-helm/9781492083641/[Learning Helm].
 
+=== Why is Kubernetes abbreviated K8s
+
+I thought you might have forgot by now! Here's a quote https://kubernetes.io/docs/concepts/overview/#:~:text=The%20name%20Kubernetes%20originates%20from,the%20Kubernetes%20project%20in%202014.[taken straight from Kubernetes' documentation]:
+
+"The name Kubernetes originates from Greek, meaning helmsman or pilot. K8s as an abbreviation results from counting the eight letters between the "K" and the "s". Google open-sourced the Kubernetes project in 2014"
 
 == TODO marco
 TODO marco:
-
-mention that everything is a manual process editing the files
 
 proper sub-headers, categories
 
 adding helm charts, kustomize and terraform to the mix
 
-docker swarm section..
-
-Also to introduce Helm, there’s one more thing you can talk about: k8s metadata is static, so no easy way to roll a new version of a container. Need to edit the file, save, apply. WHAT IS THIS SHIT! - Helm can help you with this.
-
-What I see a lot about similar articles is that authors associate Kubernetes only with Docker. While majority of Kubernetes users run Docker images indeed, it should be highlighted that Kubernetes runs containers.
-I would also state that Docker compose works runs on a single machine by default and in order the make it scalable one needs to run Docker Swarm. Some links about Docker swarm v1 and swarm v2 would be useful.
