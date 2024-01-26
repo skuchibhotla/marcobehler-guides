@@ -1,6 +1,6 @@
 = Kubernetes for Lazy Developers
 Marco Behler
-2024-11-11
+2024-01-26
 :page-layout: layout-guides
 :page-image: "TODO"
 :page-description: TODO
@@ -48,6 +48,8 @@ Your mileage with these problems will vary _a lot_ depending on what programming
 With pure Java web-applications, the issues mentioned above (excluding the submarine or more sensible infrastructure parts like your database), are, for a large part, non-issues. You https://www.marcobehler.com/guides/a-guide-to-java-versions-and-features[install a JDK] on a server/vm/container/submarine, run `_java -jar_` and live happily ever after.
 
 With PHP, Python, ahem, Node the picture looks different and you could/can easily run into version incompatibilities across your dev, staging or prod environments. Hence, people yearned for a solution to rid them of these pains: Containers.
+
+== Docker, Docker Compose & Swarm: A Recap
 
 === Hail to the Docker!
 
@@ -130,6 +132,8 @@ If your application...
 * or you simply don't want to spend enormous amounts of [line-through]#money# investments on a DevOps team
 
 ...using Docker Compose for production deployments will go a long way.
+
+== Kubernetes Basics & Concepts
 
 === What do I need Kubernetes for, then?
 
@@ -512,14 +516,11 @@ There are an additional 92387 YAML key-value pairs you'll need to learn for Depl
 * _Recreate_ will kill all your pods with the old version and re-create them with a new version: your users will experience downtime
 * _RollingUpdate_ will perform the update while still serving traffic through old pods, and is thus generally preferred.
 
-
-
 === The Static Nature of K8s
 
 Do note, that everything you have seen so far is, essentially, static. You have YAML files, and even with the _Deployment_ objects above, if you have a new version of your container, you need to edit the .yaml file, save it, apply it - there is a fair amount of manual work involved.
 
 If you want things to be a bit more dynamic, you'll have to additional tools such as https://helm.sh/, which we'll discuss below.
-
 
 === Rolling Updates: Too Good To Be True
 
@@ -563,9 +564,19 @@ However, you're also a developer and [line-through]#hopefully# not necessarily t
 
 Just in case you have to, it helps tremendously to use your IDEs Kubernete's support, https://www.jetbrains.com/help/idea/kubernetes.html[IntelliJ IDEA] in my case, to get coding assistance support for Helm charts, Kustomize files et al. Oh, we haven't talked about them yet. Let's do that. Here's a video, which will get you up to speed with https://www.youtube.com/watch?v=CryOrxL0JA8[IntelliJ's Kubernetes Plugin].
 
+== Kubernetes: Additional Topics
+
 === What are Helm Charts?
 
 TBD
+
+package manager
+charts
+install upgrade...
+chart repositories..
+
+templating
+etc
 
 === What is Kustomize?
 
@@ -599,17 +610,24 @@ As mentioned earlier in the article, there is an endless amount of learning mate
 * you can explain all the concepts described in this article in more and better detail to all of your developers
 * AND FIRST AND FOREMOST you have legitimate requirements to manage hundreds and thousands of containers dynamically (and no, magic out-of-the-blue-scaling requirements don't count)
 
-... go for Kubernetes. But it is my belief that a huge amount of companies could save themselves a fair amount of time, money & stress with a simpler approach, instead of fantasizing aboutr having Google scale infrastructure challenges.
+... go for Kubernetes. But it is my belief that a huge amount of companies could save themselves a fair amount of time, money & stress with a simpler approach, instead of fantasizing about having Google scale infrastructure challenges.
 
 === Common Kubectl Commands
 
 If there is any interested in  `_kubectl_` commands that developers might need, post a comment down below, and I'll add the most frequently used here, as neatly grouped/sorted list.
 
-=== Fin
+=== Why is Kubernetes abbreviated K8s
 
-TBD
+I thought you might have forgot by now! Here's a quote https://kubernetes.io/docs/concepts/overview/#:~:text=The%20name%20Kubernetes%20originates%20from,the%20Kubernetes%20project%20in%202014.[taken straight from Kubernetes' documentation]:
 
-small workloads, vs . google sized workloads....while default seems to be k8, do you really NEED this stuff??
+"The name Kubernetes originates from Greek, meaning helmsman or pilot. K8s as an abbreviation results from counting the eight letters between the "K" and the "s". Google open-sourced the Kubernetes project in 2014"
+
+
+== Fin
+
+By now, you should a pretty good overview of what Kubernetes is all about. Feedback, corrections and random input is always welcome! Simply leave a comment down below.
+
+Thanks for reading.
 
 === Plan For The Next Revision
 
@@ -622,20 +640,4 @@ Vote in the comment section if you want any of the below or all of them to happe
 
 === Acknowledgments & References
 
-If you see something in this article that you'd like to see improved, please file a PR.
-
 Thanks to Maarten Balliauw, Andreas Eisele, Andrei Efimov, Anton Aleksandrov, Garth Gilmour, Marit van Dijk for comments/corrections/discussion. Special thanks to the authors of https://www.oreilly.com/library/view/getting-started-with/9780138057626/[Getting Started with Kubernetes], as well as https://learning.oreilly.com/library/view/learning-helm/9781492083641/[Learning Helm].
-
-=== Why is Kubernetes abbreviated K8s
-
-I thought you might have forgot by now! Here's a quote https://kubernetes.io/docs/concepts/overview/#:~:text=The%20name%20Kubernetes%20originates%20from,the%20Kubernetes%20project%20in%202014.[taken straight from Kubernetes' documentation]:
-
-"The name Kubernetes originates from Greek, meaning helmsman or pilot. K8s as an abbreviation results from counting the eight letters between the "K" and the "s". Google open-sourced the Kubernetes project in 2014"
-
-== TODO marco
-TODO marco:
-
-proper sub-headers, categories
-
-adding helm charts, kustomize and terraform to the mix
-
