@@ -133,7 +133,7 @@ If your application...
 
 ...using Docker Compose for production deployments will go a long way.
 
-== Kubernetes Basics & Concepts
+== Kubernetes 101: Basics & Concepts
 
 === What do I need Kubernetes for, then?
 
@@ -145,7 +145,7 @@ Let's do a quick Kubernetes Concept 101.
 
 TBD Control Pane Graph
 
-=== Kubernetes 101: (Worker) Nodes
+=== (Worker) Nodes
 
 Your software (or _workload_ in Kubernetes terms) has to run somewhere, be it a virtual or physical machine. Kubernetes call this somewhere `_Nodes_`.
 
@@ -173,7 +173,7 @@ Alright, we got `_pods_` running on `_nodes_`, but who controls those nodes and 
 |Scheduling
 |===
 
-=== Kubernetes 101: Control Plane
+=== Control Plane
 
 Meet the `_Control Plane_` For simplicity's sake, let's just think of it as _one_ component that controls your nodes (as opposed to the https://kubernetes.io/docs/concepts/overview/components/[approximately 9472 components] it consists of). The control pane, among many things,...
 
@@ -181,11 +181,11 @@ Meet the `_Control Plane_` For simplicity's sake, let's just think of it as _one
 * Checks if all your pods are in the desired state, e.g. are they responsive or does one of them need to be restarted?
 * fulfills every engineer's fantasy: "We need to finally scale 10xfold, let's quickly spin up n-more pods!"
 
-=== Kubernetes 101: Pods vs Nodes
+=== Pods vs Nodes
 
 In case the difference between `_pods_` and `_nodes_` is still a bit unclear. Kubernetes has a so-called Scheduler. Whenever the Scheduler discovers new pods (== container(s)) to be scheduled (yay!), it tries to find the _optimal_ `_node_` for the pod. Which means it could very well be the case that multiple pods run on the same node or different ones. If you want to dig deeper into this topic, you might want to read the documentation for "node selection" and how you can influence it, https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/[in the official documentation].
 
-=== Kubernetes 101: Clusters & Clouds
+=== Clusters & Clouds
 
 Take multiple nodes and your control pane, and you have a `_cluster_`.
 
@@ -193,7 +193,7 @@ Take multiple clusters and you can separate your dev, test & production environm
 
 Take it even further, and [line-through]#try going# go multi-cloud Kubernetes, running multiple clusters across different private and/or public cloud platforms (Congratulations! What you have achieved is not for the faint of heart)
 
-=== Kubernetes 101: Addons
+=== Addons
 
 There are also a fair amount of https://kubernetes.io/docs/concepts/overview/components/#web-ui-dashboard[Kubernetes add-ons].
 
