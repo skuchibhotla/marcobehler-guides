@@ -582,9 +582,13 @@ etc
 
 TBD
 
-=== What is Terraform?
+=== What is Terraform and what is the difference to Kubernetes?
 
-TBD
+Thank god we're nearing the end of this guide and I don't have to spend another thousand words on Terraform (hint: as always, you'll find plenty of books and learning resources on Terraform alone out there), so I'll try and make this short:
+
+Kubernetes is about container orchestration. "Let me tell you what I want in this YAML file: Take my container(s) and run them somewhere for me!"
+
+Terraform is about provisioning infrastructure: "Let me tell you want I want in these HashiCorp Configuration Language (HCL, .tf) files! Please create five servers, a couple load balancers, two databases, a couple queues, as well as monitoring facilities in e.g. the cloud of my choice." Or: "Please set up these Kubernetes clusters (EKS) on AWS for me".
 
 === How do I do local development with Kubernetes?
 
