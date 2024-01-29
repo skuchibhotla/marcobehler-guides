@@ -1,6 +1,6 @@
 = Kubernetes for Lazy Developers
 Marco Behler
-2024-01-26
+2024-01-29
 :page-layout: layout-guides
 :page-image: "/images/guides/undraw_logistics_x4dc.png"
 :page-description: You can use this guide to get up to speed with Kubernetes as a developer. From its very basics, to more intermediate topics like Helm charts and how all of this affects you as a dev.
@@ -139,7 +139,7 @@ If your application...
 
 Things get interesting if you want to start running hundreds, thousands (or a multiple of that) containers, if you don't care or don't want to know on what specific underlying hardware/box your containers will be running on, yet still want to be able to sensibly manage all of this. Kubernetes, to the rescue!
 
-(Note: Quite a while ago I read a Kubernetes book, where in the intro they specified a lower-bound number where running Kubernetes starts makes sense and *I think* it started with hundreds to thousands, though I cannot find the exact book anymore. To be checked)
+(Note: Quite a while ago I read a Kubernetes book, where in the intro they specified a lower-bound number where running Kubernetes starts makes sense and *I think* it started with hundreds to thousands, though I cannot find the exact book anymore.)
 
 Let's do a quick Kubernetes Concept 101.
 
