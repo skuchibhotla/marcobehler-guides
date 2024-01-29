@@ -8,7 +8,7 @@ Marco Behler
 :page-tags: ["kubernetes", "kubernetes basics", "kubernetes for developers"]
 :page-commento_id: /guides/kubernetes-for-lazy-developer
 
-(*Editor’s note*: At 5000 words, you probably don't want to try reading this on a mobile device. Bookmark it and come back later.)
+(*Editor’s note*: At >5000 words, you probably don't want to try reading this on a mobile device. Bookmark it and come back later.)
 
 == Introduction
 
@@ -574,6 +574,18 @@ As we mentioned above, 'just' installing Wordpress in a Kubernetes cluster will 
 
 That is what `_Helm Charts_` are, a bunch of YAML files and `_templates_`, laid out in a specific directory structure. When you then go about `_installing_` a specific chart, Helm will download it, parse its templates and along with your values generate good old Kubernetes YAML files/manifests, that it then sends to you Kubernetes.
 
+Here is what a tiny snippet of one such template file (for a Deployment manifest) could look like, including a couple placeholders:
+
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "myChart.name" . }}
+  labels:
+    {{- include "myChart.labels" . | nindent 4 }}
+----
+
 You can then take these charts and share them through repositories. There is no single, default chart repository. A good place to find popular chart repositories is https://artifacthub.io/.
 
 In short, your workflow with Helm would be:
@@ -589,7 +601,7 @@ helm install my-release oci://registry-1.docker.io/bitnamicharts/wordpress
 This line would install the `_wordpress_` chart from the popular bitnami chart repository into your cluster, the end result: A running wordpress installation. In case you are wondering what OCI is: You can host Helm charts in container registries (Amazon ECR, Docker Hub, Artifactory etc...) that support the https://opencontainers.org/[Open Containers Initiative] standard.
 3. Install a chart of your liking - Part 2
 +
-As you almost always will have some configuration values to override (check out the immense list of parameters in the Wordpress case https://artifacthub.io/packages/helm/bitnami/wordpress[here]), you'll want to provide _your_ specific valus://artifaes to the install command. Which you can do through a YAML file, conventionally named  `_values.yaml_` or directly with a command line flag. So, the install command would rather look like this:
+As you almost always will have some configuration values to override (check out the immense list of parameters in the Wordpress case https://artifacthub.io/packages/helm/bitnami/wordpress[here]), you'll want to provide _your_ specific values to the install command. Which you can do through a YAML file, conventionally named  `_values.yaml_` or directly with a command line flag. So, the install command would rather look like this:
 +
 [source,console]
 ----
@@ -605,7 +617,30 @@ If you want to get deeper into helm, I can only recommend you the wonderful http
 
 === What is Kustomize?
 
-TBD
+You learned above that Helm uses templates to generate Kubernetes manifests. That means someone needs to do the work to create Helm templates out of Kubernetes  manifests, maintain them and then use the helm command line client to apply them.
+
+The developers of https://kustomize.io/[Kustomize] wanted to go down a different route: It allows you to create custom versions of manifests by `_layering_` your additional changes on top of the original manifest. So, instead of creating templates and placeholdering them, you'd end up with a file structure e.g. like this:
+
+[source,console]
+----
+├── deployment.yaml   // your original Kubernetes manifest filef
+└── kustomization.yaml //
+
+// (in more relalistic scenarios, you'deven have 'overlays' subfolders for different environments, like development/staging/prod etc
+----
+
+You would then run` _kustomize build_`, so that Kustomize applies your overlay and renders the final YAML result, that you can directly feed into the `_kubectl_` command (or directly run  `_kubectl apply -k_`)
+
+[source,console]
+----
+kustomize build . | kubectl apply -f -
+----
+
+If you want to understand how a kustomization.yaml file needs to be structured, https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/[have a look here].
+
+=== Which is better: Helm or Kustomize?
+
+Don't we all love opinions on Reddit? Enjoy: https://www.reddit.com/r/kubernetes/comments/w9xug9/helm_vs_kustomize/.
 
 === What is Terraform and what is the difference to Kubernetes?
 
