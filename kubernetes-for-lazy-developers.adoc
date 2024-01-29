@@ -566,17 +566,42 @@ Just in case you have to, it helps tremendously to use your IDEs Kubernete's sup
 
 == Kubernetes: Additional Topics
 
-=== What are Helm Charts?
+=== What is Helm? What are Helm Charts?
 
-TBD
+You can think of https://helm.sh/[Helm] as a packager manager for Kubernetes. Let's get a few concepts down:
 
-package manager
-charts
-install upgrade...
-chart repositories..
+As we mentioned above, 'just' installing Wordpress in a Kubernetes cluster will lead to thousands of YAML lines. And it would be great if you didn't have to write those YAML lines yourself, but could use a pre-built package for that, replacing a couple of variables along the way for your specific installation.
 
-templating
-etc
+That is what `_Helm Charts_` are, a bunch of YAML files and `_templates_`, laid out in a specific directory structure. When you then go about `_installing_` a specific chart, Helm will download it, parse its templates and along with your values generate good old Kubernetes YAML files/manifests, that it then sends to you Kubernetes.
+
+You can then take these charts and share them through repositories. There is no single, default chart repository. A good place to find popular chart repositories is https://artifacthub.io/.
+
+In short, your workflow with Helm would be:
+
+1. https://helm.sh/docs/intro/install/[Install the Helm client]
+2. Install a chart of your liking - Part 1
++
+[source,console]
+----
+helm install my-release oci://registry-1.docker.io/bitnamicharts/wordpress
+----
++
+This line would install the `_wordpress_` chart from the popular bitnami chart repository into your cluster, the end result: A running wordpress installation. In case you are wondering what OCI is: You can host Helm charts in container registries (Amazon ECR, Docker Hub, Artifactory etc...) that support the https://opencontainers.org/[Open Containers Initiative] standard.
+3. Install a chart of your liking - Part 2
++
+As you almost always will have some configuration values to override (check out the immense list of parameters in the Wordpress case https://artifacthub.io/packages/helm/bitnami/wordpress[here]), you'll want to provide _your_ specific valus://artifaes to the install command. Which you can do through a YAML file, conventionally named  `_values.yaml_` or directly with a command line flag. So, the install command would rather look like this:
++
+[source,console]
+----
+helm install my-release oci://registry-1.docker.io/bitnamicharts/wordpress --values values.yaml
+
+// OR
+helm install my-release oci://registry-1.docker.io/bitnamicharts/wordpress --set wordpressUsername=m4rc0 // etc...
+----
+4. Note: You can also use helm to upgrade your installations. Either, upgrade to a newer version of your chart (think new release), or upgrade the configuration of your installation, with the help of the `_helm upgrade_` command.
+
+If you want to get deeper into helm, I can only recommend you the wonderful https://learning.oreilly.com/library/view/learning-helm/9781492083641/[Learning Helm] book.
+
 
 === What is Kustomize?
 
