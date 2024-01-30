@@ -24,7 +24,7 @@ Many developers I've met throughout my career, didn't necessarily care about the
 
 But let's start slowly. What does running an application actually mean?
 
-It depends a bit on your programming language ecosystem, but, for example, in terms of Java and modern web applications, you literally compile all your sources in one, single, executable .jar file, that you can run with a simple command.
+It depends a bit on your programming language ecosystem. For example, in terms of Java and modern web applications, you literally compile all your sources in one, single, executable .jar file, that you can run with a simple command.
 
 [source,java]
 ----
@@ -61,7 +61,7 @@ Chances are high that you already know what Docker is and how to work with it. (
 
 -> Instead of deploying your .jar file, you'll now deploy your Docker image and run a Docker container.
 
-The beauty of this is: That as long as you have Docker installed on the target machine (and you have Kernel compatibility between your host OS and the Docker container) you can run any Docker image you want.
+The beauty of this is: That as long as you have Docker installed on the target machine (and you have kernel compatibility between your host OS and the Docker container) you can run any Docker image you want.
 
 [source,console]
 ----
@@ -137,7 +137,7 @@ If your application...
 
 === What do I need Kubernetes for, then?
 
-Things get interesting if you want to start running hundreds, thousands (or a multiple of that) containers, if you don't care or don't want to know what specific underlying hardware/box your containers will be running on, yet still want to be able to sensibly manage all of this. Kubernetes, to the rescue!
+Things get interesting if you want to start running hundreds, thousands (or a multiple of that) containers. And if you don't care or don't want to know what specific underlying hardware/box these containers will be running on, yet still want to be able to sensibly manage all of this. Kubernetes, to the rescue!
 
 (Note: Quite a while ago I read a Kubernetes book, where in the intro they specified a lower-bound number where running Kubernetes starts makes sense and *I think* it started with hundreds to thousands, though I cannot find the exact book anymore.)
 
@@ -177,20 +177,21 @@ Alright, we got `_pods_` running on `_nodes_`, but who controls those nodes and 
 |Machine
 |Node
 
-|Container(s)
+|(1-many) Container(s)
 |Pod
 
 |Deployment
 |Scheduling
 |===
 
+
 === Control Plane
 
-Meet the `_Control Plane_` For simplicity's sake, let's just think of it as _one_ component that controls your nodes (as opposed to the https://kubernetes.io/docs/concepts/overview/components/[approximately 9472 components] it consists of). The control pane, among many things,...
+Meet the `_Control Plane_`. For simplicity's sake, let's just think of it as _one_ component that controls your nodes (as opposed to the https://kubernetes.io/docs/concepts/overview/components/[approximately 9472 components] it consists of). The control pane, among many things,...
 
 * Lets you [line-through]#run# _schedule_ your application, i.e. lets you put a pod on a node.
 * Checks if all your pods are in the desired state, e.g. are they responsive, or does one of them need to be restarted?
-* fulfills every engineer's fantasy: "We need to finally scale 10xfold, let's quickly spin up n-more pods!"
+* Fulfills every engineer's fantasy: "We need to finally scale 10xfold, let's quickly spin up n-more pods!"
 
 === Pods vs Nodes
 
@@ -202,7 +203,7 @@ Take multiple nodes and your control pane, and you have a `_cluster_`.
 
 Take multiple clusters and you can separate your dev, test & production environments or maybe teams, projects or different application types - that's up to you.
 
-Take it even further, and [line-through]#try going# go multi-cloud Kubernetes, running multiple clusters across different private and/or public cloud platforms (Congratulations! What you have achieved is not for the faint of heart)
+Take it even further, and [line-through]#try going# go multi-cloud Kubernetes, running multiple clusters across different private and/or public cloud platforms (Congratulations! What you have achieved is not for the faint of heart.)
 
 === Addons
 
@@ -441,7 +442,7 @@ That's why we need to dig deeper into the concepts of `_ReplicaSets_` and `_Depl
 
 Let's be humble. We don't need auto-scaling right off the bat, but it would be nice to have redundant instances of our application and some load-balancing, to be a bit more professional with our deployments, wouldn't it?
 
-Kubernetes' `_ReplicaSets_` to the rescue!
+Kubernetes' https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/[ReplicaSets] to the rescue!
 
 Let's have a look at a `_marcocodes-replica.yaml_` file, that defines such a minimal ReplicaSet.
 
@@ -498,7 +499,7 @@ Hence we need a new concept to help us manage releases of new versions. Meet: `_
 
 === Deployments
 
-Meet `_Deployments_`, which are used to manage `_ReplicaSets_` (wow!).
+Meet https://kubernetes.io/docs/concepts/workloads/controllers/deployment/[Deployments], which are used to manage `_ReplicaSets_` (wow!).
 
 [source,yaml]
 ----
@@ -555,7 +556,7 @@ It is just my impression that talk about _self-healing_ systems often insinuates
 
 So far, we talked about dynamically spawning up pods, but never about how network traffic actually reaches your applications. Kubernetes is inherently dynamic, meaning you can spawn new pods or shut them down at any point in time.
 
-Kubernetes has a couple of concepts to help you with that, from `_Service_` objects (which allow you to expose parts of your cluster to the outer world) to `_Ingress_` objects (allowing you to do HTTP load balancing). Again, this will amount to tons and tons of YAML and a fair amount of reading, but at the end of the day Kubernetes allows you to route any traffic your application gets to your cluster and the other way around.
+Kubernetes has a couple of concepts to help you with that, from https://kubernetes.io/docs/concepts/services-networking/service/[Service] objects (which allow you to expose parts of your cluster to the outer world) to `_Ingress_` objects (allowing you to do HTTP load balancing). Again, this will amount to tons and tons of YAML and a fair amount of reading, but at the end of the day Kubernetes allows you to route any traffic your application gets to your cluster and the other way around.
 
 (Fun Ingress Fact: You'll need to install an Ingress controller (there is no standard one being built into Kubernetes), which will do the load-balancing for you. Options are plenty: On platforms like AWS, you'd simply use ELB, if you go bare-metal Kubernetes you could use https://projectcontour.io/[Contour], etc.)
 
@@ -712,7 +713,9 @@ Vote in the comment section if you want any of the below or all of them to happe
 * Potentially: Kubectl Commands
 * Potentially: Example on Kubernetes vs Docker Compose side-by-side configs
 * Potentially: GitOps
+* Suggestion: Connecting to Kubernetes using Kubectl/K9s/Lens IDE or IntelliJ Kubernetes Plugin
+* Suggestion: Service Mesh using Istio - common use-case when working with microservices.
 
 === Acknowledgments & References
 
-Thanks to Maarten Balliauw, Andreas Eisele, Andrei Efimov, Anton Aleksandrov, Garth Gilmour, Marit van Dijk for comments/corrections/discussion. Special thanks to the authors of https://www.oreilly.com/library/view/getting-started-with/9780138057626/[Getting Started with Kubernetes], as well as https://learning.oreilly.com/library/view/learning-helm/9781492083641/[Learning Helm].
+Thanks to Maarten Balliauw, Andreas Eisele, Andrei Efimov, Anton Aleksandrov, Garth Gilmour, Marit van Dijk, Paul Everitt, Mukul Mantosh for comments/corrections/discussion. Special thanks to the authors of https://www.oreilly.com/library/view/getting-started-with/9780138057626/[Getting Started with Kubernetes], as well as https://learning.oreilly.com/library/view/learning-helm/9781492083641/[Learning Helm].
